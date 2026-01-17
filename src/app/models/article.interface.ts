@@ -1,5 +1,5 @@
 export interface PlosArticle {
-  id: string; // DOI
+  id: string; 
   title_display: string;
   journal: string;
   publication_date: string;
@@ -15,7 +15,14 @@ export interface PlosApiResponse {
 
 export interface PlosArticleRaw {
   id: string;
-  title_display?: string[];
+  title_display?: string[] | string;
   journal?: string;
   publication_date?: string;
+}
+
+export interface PaginatedResult {
+  articles: PlosArticle[];
+  totalResults: number;
+  currentPage: number;
+  totalPages: number;
 }

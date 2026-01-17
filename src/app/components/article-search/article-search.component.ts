@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Observable, Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { PlosApiService } from '../../services/plos-api.service';
-import { PlosArticle } from '../../models/article.interface';
+import { PlosArticle, PaginatedResult } from '../../models/article.interface';
 import { ArticleTableComponent } from '../article-table/article-table.component';
 
 @Component({
@@ -17,6 +17,11 @@ export class ArticleSearchComponent implements OnDestroy {
   articles: PlosArticle[] = [];
   isLoading = false;
   errorMessage = '';
+  currentPage = 1;
+  totalPages = 0;
+  totalResults = 0;
+  currentQuery = '';
+  
   private searchTerms = new Subject<string>();
   private subscription?: Subscription;
 
@@ -25,43 +30,76 @@ export class ArticleSearchComponent implements OnDestroy {
   }
 
   onSearchChange(term: string): void {
+    this.currentPage = 1;
+    this.currentQuery = term;
     this.searchTerms.next(term);
+  }
+
+  onPageChange(page: number): void {
+    if (page < 1 || page > this.totalPages) return;
+    
+    this.currentPage = page;
+    this.performDirectSearch(this.currentQuery, page);
   }
 
   private initializeSearch(): void {
     this.subscription = this.searchTerms.pipe(
       debounceTime(300),
       distinctUntilChanged(),
-      switchMap(term => this.performSearch(term))
+      switchMap(term => this.performSearch(term, 1))
     ).subscribe({
-      next: (articles) => this.handleSuccess(articles),
+      next: (result) => this.handleSuccess(result),
       error: (error) => this.handleError(error)
     });
   }
 
-  private performSearch(term: string): Observable<PlosArticle[]> {
+  private performSearch(term: string, page: number): Observable<PaginatedResult> {
     if (!term.trim()) {
-      this.articles = [];
-      this.isLoading = false;
+      this.resetResults();
       return new Observable(observer => observer.complete());
     }
 
     this.isLoading = true;
     this.errorMessage = '';
-    return this.plosApiService.searchArticles(term);
+    return this.plosApiService.searchArticles(term, page);
   }
 
-  private handleSuccess(articles: PlosArticle[]): void {
-    this.articles = articles;
+  private performDirectSearch(term: string, page: number): void {
+    if (!term.trim()) {
+      this.resetResults();
+      return;
+    }
+
+    this.isLoading = true;
+    this.errorMessage = '';
+    
+    this.plosApiService.searchArticles(term, page).subscribe({
+      next: (result) => this.handleSuccess(result),
+      error: (error) => this.handleError(error)
+    });
+  }
+
+  private handleSuccess(result: PaginatedResult): void {
+    this.articles = result.articles;
+    this.totalResults = result.totalResults;
+    this.totalPages = result.totalPages;
+    this.currentPage = result.currentPage;
     this.isLoading = false;
   }
 
-private handleError(error: any): void {
-  this.errorMessage = 'Error searching articles. Please try again.';
-  this.isLoading = false;
-  console.error('Error:', error);
-}
+  private handleError(error: any): void {
+    this.errorMessage = 'Error searching articles. Please try again.';
+    this.isLoading = false;
+    console.error('Error:', error);
+  }
 
+  private resetResults(): void {
+    this.articles = [];
+    this.totalResults = 0;
+    this.totalPages = 0;
+    this.currentPage = 1;
+    this.isLoading = false;
+  }
 
   ngOnDestroy(): void {
     this.subscription?.unsubscribe();

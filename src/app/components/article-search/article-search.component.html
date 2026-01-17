@@ -1,21 +1,41 @@
 <div class="search-container">
-  <h1>PLOS Articles Search</h1>
+  <div class="header">
+    <h1>PLOS Articles Search</h1>
+  </div>
   
   <div class="search-box">
-    <input 
-      type="text" 
-      placeholder="Search by title (e.g., university)..."
-      (input)="onSearchChange($any($event.target).value)"
-      class="search-input"
-    />
+    <div class="search-input-wrapper">
+      <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"></circle>
+        <path d="m21 21-4.35-4.35"></path>
+      </svg>
+      <input 
+        type="text" 
+        placeholder="Search by title"
+        (input)="onSearchChange($any($event.target).value)"
+        class="search-input"
+      />
+    </div>
   </div>
 
   <div *ngIf="isLoading" class="loading">
-    Loading results...
+    <div class="spinner"></div>
+    <p>Loading results...</p>
   </div>
 
   <div *ngIf="errorMessage" class="error">
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="10"></circle>
+      <line x1="12" y1="8" x2="12" y2="12"></line>
+      <line x1="12" y1="16" x2="12.01" y2="16"></line>
+    </svg>
     {{ errorMessage }}
+  </div>
+
+  <div *ngIf="!isLoading && totalResults > 0" class="results-info">
+    Found <strong>{{ totalResults.toLocaleString() }}</strong> results
+    <span class="separator">•</span>
+    Page <strong>{{ currentPage }}</strong> of <strong>{{ totalPages }}</strong>
   </div>
 
   <app-article-table 
@@ -23,7 +43,54 @@
     [articles]="articles">
   </app-article-table>
 
-  <div *ngIf="!isLoading && articles.length === 0 && !errorMessage" class="no-results">
-    No results found
+  <div *ngIf="!isLoading && articles.length > 0 && totalPages > 1" class="pagination">
+    <button 
+      class="pagination-btn"
+      (click)="onPageChange(1)"
+      [disabled]="currentPage === 1">
+      First
+    </button>
+    
+    <button 
+      class="pagination-btn"
+      (click)="onPageChange(currentPage - 1)"
+      [disabled]="currentPage === 1">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="15 18 9 12 15 6"></polyline>
+      </svg>
+      Previous
+    </button>
+
+    <div class="page-numbers">
+      <span class="page-number active">{{ currentPage }}</span>
+      <span class="page-divider">of</span>
+      <span class="page-number">{{ totalPages }}</span>
+    </div>
+
+    <button 
+      class="pagination-btn"
+      (click)="onPageChange(currentPage + 1)"
+      [disabled]="currentPage === totalPages">
+      Next
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="9 18 15 12 9 6"></polyline>
+      </svg>
+    </button>
+
+    <button 
+      class="pagination-btn"
+      (click)="onPageChange(totalPages)"
+      [disabled]="currentPage === totalPages">
+      Last
+    </button>
+  </div>
+
+  <div *ngIf="!isLoading && articles.length === 0 && !errorMessage && currentQuery" class="no-results">
+    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <circle cx="11" cy="11" r="8"></circle>
+      <path d="m21 21-4.35-4.35"></path>
+    </svg>
+    <h3>No results found</h3>
+    <p>Try adjusting your search terms</p>
   </div>
 </div>
