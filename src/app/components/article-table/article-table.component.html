@@ -1,0 +1,24 @@
+<div class="table-container">
+  <table class="articles-table">
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Journal</th>
+        <th>Publication Date</th>
+        <th>DOI</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let article of articles; trackBy: trackByDoi">
+        <td class="title-cell">{{ article.title_display }}</td>
+        <td>{{ article.journal }}</td>
+        <td>{{ article.publication_date }}</td>
+        <td class="doi-cell">
+          <a [href]="'https://doi.org/' + article.id" target="_blank">
+            {{ article.id }}
+          </a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

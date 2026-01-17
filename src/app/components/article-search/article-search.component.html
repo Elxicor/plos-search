@@ -1,0 +1,29 @@
+<div class="search-container">
+  <h1>PLOS Articles Search</h1>
+  
+  <div class="search-box">
+    <input 
+      type="text" 
+      placeholder="Search by title (e.g., university)..."
+      (input)="onSearchChange($any($event.target).value)"
+      class="search-input"
+    />
+  </div>
+
+  <div *ngIf="isLoading" class="loading">
+    Loading results...
+  </div>
+
+  <div *ngIf="errorMessage" class="error">
+    {{ errorMessage }}
+  </div>
+
+  <app-article-table 
+    *ngIf="!isLoading && articles.length > 0"
+    [articles]="articles">
+  </app-article-table>
+
+  <div *ngIf="!isLoading && articles.length === 0 && !errorMessage" class="no-results">
+    No results found
+  </div>
+</div>
