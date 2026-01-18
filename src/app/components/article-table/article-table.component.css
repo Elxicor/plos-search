@@ -1,8 +1,14 @@
+/* --- Estilos de Tabla: Estilo Pergamino y Tinta --- */
+
 .table-container {
   overflow-x: auto;
-  background-color: #fff;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  /* Fondo color pergamino claro */
+  background-color: #fdf5e6; 
+  /* Borde doble estilo marco antiguo */
+  border: 4px double #8b5a2b; 
+  border-radius: 8px;
+  box-shadow: 5px 5px 15px rgba(62, 39, 35, 0.3);
+  font-family: 'Georgia', 'Times New Roman', serif;
 }
 
 .articles-table {
@@ -11,32 +17,44 @@
 }
 
 .articles-table thead {
-  background: linear-gradient(135deg, #455da0 0%, #455da0 100%);
-  color: white;
+  /* Fondo marrón cuero oscuro */
+  background-color: #3e2723;
+  background-image: linear-gradient(to bottom, #4e342e, #3e2723);
+  color: #deb887; /* Texto color oro antiguo */
+  border-bottom: 3px solid #8b5a2b;
 }
 
 .articles-table th {
-  padding: 16px;
+  padding: 18px;
   text-align: left;
-  font-weight: 600;
-  font-size: 0.9rem;
+  font-weight: 700;
+  font-size: 1rem;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 1px;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+  font-family: 'Garamond', 'Georgia', serif;
 }
 
 .articles-table td {
-  padding: 16px;
-  border-bottom: 1px solid #f0f0f0;
-  font-size: 0.95rem;
-  color: #333;
+  padding: 18px;
+  /* Líneas divisorias color sepia suave */
+  border-bottom: 1px solid #d7ccc8; 
+  font-size: 1rem;
+  color: #2c1810; /* Tinta marrón oscuro */
+}
+
+/* Efecto cebra sutil para facilitar lectura */
+.articles-table tbody tr:nth-child(even) {
+  background-color: rgba(139, 90, 43, 0.05);
 }
 
 .articles-table tbody tr {
-  transition: background-color 0.2s ease;
+  transition: background-color 0.3s ease;
 }
 
 .articles-table tbody tr:hover {
-  background-color: #f8fdf9;
+  /* Resaltado estilo papel envejecido más oscuro */
+  background-color: #f0e6d2; 
 }
 
 .articles-table tbody tr:last-child td {
@@ -44,32 +62,36 @@
 }
 
 .title-cell {
-  font-weight: 500;
+  font-weight: 600;
   max-width: 500px;
-  color: #1a1a1a;
-  line-height: 1.5;
+  color: #3e2723;
+  line-height: 1.6;
+  font-style: italic; /* Toque literario */
 }
 
 .doi-cell a {
-  color: #4CAF50;
+  /* Color rojo lacre o vino para los enlaces */
+  color: #8b0000; 
   text-decoration: none;
-  font-weight: 500;
-  transition: color 0.2s ease;
+  font-weight: 700;
+  transition: all 0.2s ease;
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
+  border-bottom: 1px dotted #8b0000;
 }
 
 .doi-cell a:hover {
-  color: #45a049;
-  text-decoration: underline;
+  color: #b71c1c;
+  border-bottom: 1px solid #b71c1c;
+  background-color: rgba(139, 0, 0, 0.1);
 }
 
 @media (max-width: 768px) {
   .articles-table th,
   .articles-table td {
-    padding: 12px 8px;
-    font-size: 0.85rem;
+    padding: 12px 10px;
+    font-size: 0.9rem;
   }
   
   .title-cell {
